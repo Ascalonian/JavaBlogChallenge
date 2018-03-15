@@ -1,12 +1,12 @@
 package interview.blog;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+
+import interview.blog.service.BlogPostService;
+import interview.blog.service.BlogPostServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
@@ -18,10 +18,10 @@ import org.pegdown.PegDownProcessor;
  * You can choose the database (SQLites, MongoDB, PostgreSQL, or whatever) and
  * the interface method (Hibernate, hand-written SQL, etc).
  */
-public class BlogDB
-{
-    private HashMap<String, BlogPost> posts = new HashMap();
+public class BlogDB  {
     private PegDownProcessor pegdown = new PegDownProcessor( Extensions.ALL );
+
+    private BlogPostService postService = BlogPostServiceImpl.getInstance();
     
     /**
      * Creates of updates a blog post, and returns its UUID.
@@ -33,7 +33,7 @@ public class BlogDB
             post.setUuid( UUID.randomUUID().toString() );
         } 
         else {
-            posts.remove( post.getUuid() );
+            postService.remove(post.getUuid());
         }
         
         if( post.getPubDate() == 0 ){
@@ -41,19 +41,23 @@ public class BlogDB
         }
         
         String pull = post.getPullQuote();
+
         if( !StringUtils.isBlank( pull ) ){
             pull = pegdown.markdownToHtml( pull );
             post.setPullQuoteAsHtml( pull );
         }
         
         String body = post.getBody();
+
         if( !StringUtils.isBlank( body ) ){
             body = pegdown.markdownToHtml( body );
             post.setBodyAsHtml( body );
         }
-        
-        posts.put( post.getUuid(), post );
-        return post.getUuid();
+
+        com.galvin.interview.entity.BlogPost savePost = convert(post);
+        postService.save(savePost);
+
+        return savePost.getUuid();
     }
     
     /**
@@ -61,7 +65,7 @@ public class BlogDB
      * @param uuid 
      */
     public void delete( String uuid ){
-        posts.remove( uuid );
+        postService.remove(uuid);
     }
     
     /**
@@ -70,10 +74,15 @@ public class BlogDB
      * @return the blog post
      */
     public BlogPost get( String uuid ) {
-        BlogPost result =  posts.get( uuid );
-        if( result != null ){
+        com.galvin.interview.entity.BlogPost foundPost = postService.findByUUID(uuid);
+
+        BlogPost result = null;
+
+        if (foundPost != null) {
+            result = convert(foundPost);
             result = result.clone();
         }
+
         return result;
     }
     
@@ -82,18 +91,68 @@ public class BlogDB
      * @return all blog posts in the database.
      */
     public List<BlogPost> get(){
-        List<BlogPost> result = new ArrayList();
-        
-        Set<String> keys = posts.keySet();
-        for( String key : keys ){
-            BlogPost post = posts.get(key);
-            if( post != null ){
-                post = post.clone();
-            }
-            result.add(  post );
+        List<BlogPost> result = new ArrayList<>();
+
+        List<com.galvin.interview.entity.BlogPost> foundPosts = postService.findAll();
+
+        for (com.galvin.interview.entity.BlogPost blogPost : foundPosts) {
+            BlogPost post = convert(blogPost);
+            post = post.clone();
+            result.add(post);
         }
         
-        Collections.sort( result, new BlogPostComparator() );
+        result.sort(new BlogPostComparator());
+
         return result;
+    }
+
+    private com.galvin.interview.entity.BlogPost convert(final BlogPost post) {
+        final String uuid = post.getUuid();
+        final String title = post.getTitle();
+        final long pubDate = post.getPubDate();
+        final String author = post.getAuthor();
+        final String authorEmail = post.getAuthorEmail();
+        final String pullQuote = post.getPullQuote();
+        final String pullQuoteAsHTML = post.getPullQuoteAsHtml();
+        final String body = post.getBody();
+        final String bodyAsHTML = post.getBodyAsHtml();
+
+        com.galvin.interview.entity.BlogPost newPost = new com.galvin.interview.entity.BlogPost();
+        newPost.setUuid(uuid);
+        newPost.setTitle(title);
+        newPost.setPubDate(pubDate);
+        newPost.setAuthor(author);
+        newPost.setAuthorEmail(authorEmail);
+        newPost.setPullQuote(pullQuote);
+        newPost.setPullQuoteAsHtml(pullQuoteAsHTML);
+        newPost.setBody(body);
+        newPost.setBodyAsHtml(bodyAsHTML);
+
+        return newPost;
+    }
+
+    private BlogPost convert(final com.galvin.interview.entity.BlogPost post) {
+        final String uuid = post.getUuid();
+        final String title = post.getTitle();
+        final long pubDate = post.getPubDate();
+        final String author = post.getAuthor();
+        final String authorEmail = post.getAuthorEmail();
+        final String pullQuote = post.getPullQuote();
+        final String pullQuoteAsHTML = post.getPullQuoteAsHtml();
+        final String body = post.getBody();
+        final String bodyAsHTML = post.getBodyAsHtml();
+
+        BlogPost newPost = new BlogPost();
+        newPost.setUuid(uuid);
+        newPost.setTitle(title);
+        newPost.setPubDate(pubDate);
+        newPost.setAuthor(author);
+        newPost.setAuthorEmail(authorEmail);
+        newPost.setPullQuote(pullQuote);
+        newPost.setPullQuoteAsHtml(pullQuoteAsHTML);
+        newPost.setBody(body);
+        newPost.setBodyAsHtml(bodyAsHTML);
+
+        return newPost;
     }
 }
