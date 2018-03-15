@@ -38,6 +38,10 @@ nbactions.xml
 nb-configuration.xml
 .nb-gradle/
 
+### IntelliJ ###
+.idea
+*.iml
+
 
 ### OSX ###
 .DS_Store
