@@ -128,5 +128,17 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.galvin.interview</groupId>
+            <artifactId>BlogModel</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.galvin.interview</groupId>
+            <artifactId>BlogServices</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
