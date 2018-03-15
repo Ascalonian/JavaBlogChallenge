@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="create-BLOGPOST" author="mjudd" context="test" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+        <createTable tableName="blogpost">
+            <column name="uuid" type="VARCHAR(36)" remarks="UUID">
+                <constraints primaryKey="true" primaryKeyName="blogpost_pk" nullable="false" />
+            </column>
+            <column name="title" type="VARCHAR(2000)" remarks="Title of the blog post" />
+            <column name="pub_date" type="BIGINT" remarks="Published date of the blog post" />
+            <column name="author" type="VARCHAR(2000)" remarks="Author of the post" />
+            <column name="author_email" type="VARCHAR(50)" remarks="Email of the author" />
+            <column name="pull_quote" type="TEXT" remarks="Pull quote" />
+            <column name="pull_quote_as_html" type="TEXT" remarks="Pull quote as HTML" />
+            <column name="body" type="TEXT" remarks="Blog message" />
+            <column name="body_as_html" type="TEXT" remarks="Message as HTML" />
+        </createTable>
+
+        <comment>Create the blog post table</comment>
+    </changeSet>
+</databaseChangeLog>
