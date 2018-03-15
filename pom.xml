@@ -19,5 +19,7 @@
         <module>BlogJavaFrontend</module>
         <module>BlogJavaFatJar</module>
         <module>BlogJavaDist</module>
+        <module>BlogModel</module>
+        <module>BlogServices</module>
     </modules>
 </project>
