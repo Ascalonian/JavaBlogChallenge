@@ -23,28 +23,28 @@ public class BlogPost {
     @Column (name = "uuid", unique = true, nullable = false)
     private String uuid;
 
-    @Column(name = "title", length = 100)
+    @Column(name = "title", length = 2000)
     private String title;
 
     @Column(name = "pub_date")
     private long pubDate;
 
-    @Column(name = "author", length = 100)
+    @Column(name = "author", length = 2000)
     private String author;
 
     @Column(name = "author_email", length = 50)
     private String authorEmail;
 
-    @Column(name = "pull_quote", length = 100)
+    @Column(name = "pull_quote")
     private String pullQuote;
 
-    @Column(name = "pull_quote_as_html", length = 2000)
+    @Column(name = "pull_quote_as_html")
     private String pullQuoteAsHtml;
 
-    @Column(name = "body", length = 2000)
+    @Column(name = "body")
     private String body;
 
-    @Column(name = "body_as_html", length = 2000)
+    @Column(name = "body_as_html")
     private String bodyAsHtml;
 
     public BlogPost() {}
